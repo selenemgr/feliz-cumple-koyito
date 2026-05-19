@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<!-- Birthday Webpage
+     An interactive celebration page featuring an animated starfield,
+     floating balloons, a clickable birthday cake with candles,
+     a message card with modal popup, and a CSS/JS fireworks display.
+-->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday! 🎉</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        /* ── RESET ── remove default browser spacing and use border-box sizing */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ── BASE ── dark night-sky background; prevent horizontal scroll */
+        body {
+            min-height: 100vh;
+            font-family: 'Nunito', sans-serif;
+            background: #0d0821;
+            overflow-x: hidden;
+        }
+
+        /* ── STARFIELD ── */
+        #stars {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle var(--d, 3s) var(--delay, 0s) infinite alternate;
+        }
+
+        @keyframes twinkle {
+            from {
+                opacity: 0.1;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1.4);
+            }
+        }
+
+        /* ── BALLOONS ── */
+        #balloons {
+            position: fixed;
+            bottom: -160px;
+            left: 0;
+            width: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .balloon-wrap {
+            position: absolute;
+            bottom: 0;
+            animation: rise var(--bd, 14s) var(--bdelay, 0s) ease-in-out infinite;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+
+            8% {
+                opacity: 0.95;
+            }
+
+            92% {
+                opacity: 0.95;
+            }
+
+            100% {
+                transform: translateY(-115vh) translateX(var(--bsx, 20px)) rotate(var(--brot, 6deg));
+                opacity: 0;
+            }
+        }
+
+        /* subtle drop shadow beneath each balloon SVG */
+        .balloon-wrap svg {
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+        }
+
+        /* ── FIREWORKS ── */
+        #fireworks {
+            position: fixed;
+            bottom: -160px;
+            left: 0;
+            width: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .fw-flash {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 92;
+            transform: translate(-50%, -50%) scale(0);
+            animation: fw-flash 0.38s ease-out forwards;
+        }
+
+        @keyframes fw-flash {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+
+            45% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.85;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1.8);
+                opacity: 0;
+            }
+        }
+
+        /* narrow pill shape that streaks upward like a rocket trail */
+        .fw-rocket {
+            position: fixed;
+            width: 3px;
+            height: 13px;
+            border-radius: 50% 50% 30% 30%;
+            background: #fff;
+            pointer-events: none;
+            z-index: 91;
+            margin-left: -1.5px;
+            /* layered glow in the rocket's burst colour */
+            box-shadow: 0 0 4px 2px rgba(255, 255, 255, 0.9),
+                0 6px 14px 5px var(--col, #ffd700),
+                0 16px 24px 6px var(--col, #ffd700);
+            animation: fw-rise var(--dur, 0.8s) ease-in forwards;
+        }
+
+        @keyframes fw-rise {
+            0% {
+                transform: translateY(0);
+                opacity: 0;
+            }
+
+            4% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(var(--rise));
+                opacity: 1;
+            }
+        }
+
+        /* individual burst particle (--br controls shape) */
+        .fw-spark {
+            position: fixed;
+            border-radius: var(--br, 50%);
+            pointer-events: none;
+            z-index: 90;
+            box-shadow: 0 0 var(--glow, 4px) 1px var(--col, #fff);
+            animation: fw-spark var(--dur, 0.85s) cubic-bezier(0.08, 0.72, 0.2, 1) forwards;
+        }
+
+        @keyframes fw-spark {
+            0% {
+                transform: translate(0, 0) rotate(var(--rot, 0deg)) scale(1);
+                opacity: 1;
+            }
+
+            18% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(var(--tx), calc(var(--ty) + var(--grav, 20px))) rotate(var(--rot, 0deg)) scale(0.15);
+                opacity: 0;
+            }
+        }
+
+        .fw-glitter {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 90;
+            animation: fw-glitter var(--dur, 1.3s) ease-out forwards;
+        }
+
+        @keyframes fw-glitter {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+                box-shadow: 0 0 6px 3px var(--col, #fff);
+            }
+
+            30% {
+                opacity: 0.9;
+                box-shadow: 0 0 3px 1px var(--col, #fff);
+            }
+
+            65% {
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translate(var(--tx), calc(var(--ty) + var(--grav, 90px))) scale(0);
+                opacity: 0;
+                box-shadow: none;
+            }
+        }
+
+        /* ── LAYOUT ── */
+        .page {
+            position: relative;
+            z-index: 5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px 60px;
+            gap: 10px;
+        }
+
+        /* ── TITLE ── */
+        .title {
+            font-family: 'Pacifico', cursive;
+            font-size: clamp(3.8rem, 9vw, 6.5rem);
+            background: linear-gradient(90deg, #ff6baf, #ffd700, #c44dff, #4db8ff, #ff6baf);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 5s linear infinite, bob 2.4s ease-in-out infinite;
+            filter: drop-shadow(0 0 24px rgba(255, 215, 0, 0.45));
+            text-align: center;
+            width: 100%;
+            padding: 16px 20px 4px;
+        }
+
+        @keyframes shimmer {
+            to {
+                background-position: 300% center;
+            }
+        }
+
+        @keyframes bob {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 3.5vw, 1.7rem);
+            color: #ffd700;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-align: center;
+            text-shadow: 0 0 18px rgba(255, 215, 0, 0.65);
+            animation: glow 2.5s ease-in-out infinite;
+            margin-top: 4px;
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                text-shadow: 0 0 18px rgba(255, 215, 0, 0.6);
+            }
+
+            50% {
+                text-shadow: 0 0 36px rgba(255, 215, 0, 1);
+            }
+        }
+
+        /* ── CAKE ── */
+        #cakeWrap {
+            cursor: pointer;
+            position: relative;
+            margin: 18px 0 34px;
+            transition: transform 0.3s;
+            user-select: none;
+        }
+
+        #cakeWrap:hover {
+            transform: scale(1.04);
+        }
+
+        #cakeWrap:active {
+            transform: scale(0.97);
+        }
+
+        #cakeSubtitle {
+            margin-top: 14px;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.65);
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        @keyframes subtitleFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes subtitleFadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0px);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+        }
+
+        /* ── CARD REVEAL ── */
+        .card {
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .card.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(28px);
+        }
+
+        /* ── MODAL POPUP ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            color: white;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            position: relative;
+            background: rgba(13, 8, 33, 0.93);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 28px;
+            padding: 44px 48px 36px;
+            max-width: 560px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6), 0 0 120px rgba(196, 77, 255, 0.28);
+            transform: scale(0.8) translateY(20px);
+            transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease;
+            opacity: 0;
+        }
+
+        .modal-box .cheers {
+            margin-top: 14px;
+            color: #ffd700;
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+
+        .modal-overlay.open .modal-box {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.05rem;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            line-height: 1;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.22);
+            color: #fff;
+        }
+
+        /* flame group: subtle scale/rotate flicker animation */
+        .flame-g {
+            animation: flicker 0.25s infinite alternate;
+            transform-origin: 50% 100%;
+        }
+
+        @keyframes flicker {
+            from {
+                transform: scaleX(1) scaleY(1);
+            }
+
+            to {
+                transform: scaleX(1.02) scaleY(1.01) rotate(0.2deg);
+            }
+        }
+
+        /* hide flame completely when candle is blown out */
+        .flame-g.out {
+            display: none;
+        }
+
+        /* ── MESSAGE CARD ── */
+        .card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            border-radius: 24px;
+            padding: 28px 36px;
+            max-width: 580px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 0 0 80px rgba(196, 77, 255, 0.08);
+        }
+
+        .card p {
+            color: rgba(255, 255, 255, 0.88);
+            font-size: 1.08rem;
+            line-height: 1.85;
+        }
+
+        .card .cheers {
+            margin-top: 14px;
+            color: #ffd700;
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+
+        .emoji-row {
+            font-size: 1.9rem;
+            letter-spacing: 8px;
+            margin-bottom: 16px;
+            display: block;
+            animation: emojiSway 3s ease-in-out infinite;
+        }
+
+        @keyframes emojiSway {
+
+            0%,
+            100% {
+                transform: rotate(0);
+            }
+
+            33% {
+                transform: rotate(-2deg);
+            }
+
+            66% {
+                transform: rotate(2deg);
+            }
+        }
+
+        /* ── BUTTON EXPAND ── */
+        .btn-expand {
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.6);
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .btn-expand:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: #fff;
+        }
+
+        .btn-expand svg {
+            width: 14px;
+            height: 14px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        @media (max-width: 500px) {
+            .card {
+                padding: 20px 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Fixed background layers (z-index 0–2), rendered behind all page content -->
+    <!-- Twinkling star dots generated by JS -->
+    <div id="stars"></div>
+    <!-- Rising balloon SVGs spawned and removed by JS -->
+    <div id="balloons"></div>
+    <!-- Firework rockets/bursts injected by JS; container kept for z-index stacking -->
+    <div id="fireworks"></div>
+
+    <main class="page">
+        <h1 class="title">Happy Birthday!</h1>
+        <p class="subtitle">✨ You Are Absolutely Wonderful ✨</p>
+
+        <!-- CAKE -->
+        <div id="cakeWrap" onclick="blowCandles()">
+            <svg id="cake" width="240" height="300" viewBox="0 -16 240 301" xmlns="http://www.w3.org/2000/svg"
+                aria-label="Birthday cake">
+
+                <!-- shadow plate -->
+                <ellipse cx="120" cy="272" rx="108" ry="11" fill="#000" opacity="0.25" />
+
+                <!-- ── CANDLES ── -->
+                <!-- Candle A (pink) -->
+                <rect x="70" y="34" width="14" height="36" rx="4" fill="#ff6baf" />
+                <rect x="70" y="34" width="14" height="9" rx="3" fill="#ffaad0" />
+                <line x1="77" y1="34" x2="77" y2="26" stroke="#aaa" stroke-width="1.5" />
+                <g class="flame-g" id="f1">
+                    <ellipse cx="77" cy="18" rx="5.5" ry="9" fill="#ffd700" />
+                    <ellipse cx="77" cy="19" rx="3.5" ry="6" fill="#ff8c00" />
+                    <ellipse cx="77" cy="20" rx="2" ry="3.5" fill="#fff" opacity="0.7" />
+                </g>
+
+                <!-- Candle B (purple) -->
+                <rect x="96" y="26" width="14" height="44" rx="4" fill="#c44dff" />
+                <rect x="96" y="26" width="14" height="9" rx="3" fill="#d980ff" />
+                <line x1="103" y1="26" x2="103" y2="18" stroke="#aaa" stroke-width="1.5" />
+                <g class="flame-g" id="f2">
+                    <ellipse cx="103" cy="10" rx="5.5" ry="9" fill="#ffd700" />
+                    <ellipse cx="103" cy="11" rx="3.5" ry="6" fill="#ff8c00" />
+                    <ellipse cx="103" cy="12" rx="2" ry="3.5" fill="#fff" opacity="0.7" />
+                </g>
+
+                <!-- Candle C (gold) -->
+                <rect x="122" y="26" width="14" height="44" rx="4" fill="#ffd700" />
+                <rect x="122" y="26" width="14" height="9" rx="3" fill="#ffe566" />
+                <line x1="129" y1="26" x2="129" y2="18" stroke="#aaa" stroke-width="1.5" />
+                <g class="flame-g" id="f3">
+                    <ellipse cx="129" cy="10" rx="5.5" ry="9" fill="#ffd700" />
+                    <ellipse cx="129" cy="11" rx="3.5" ry="6" fill="#ff8c00" />
+                    <ellipse cx="129" cy="12" rx="2" ry="3.5" fill="#fff" opacity="0.7" />
+                </g>
+
+                <!-- Candle D (blue) -->
+                <rect x="148" y="34" width="14" height="36" rx="4" fill="#4db8ff" />
+                <rect x="148" y="34" width="14" height="9" rx="3" fill="#99d6ff" />
+                <line x1="155" y1="34" x2="155" y2="26" stroke="#aaa" stroke-width="1.5" />
+                <g class="flame-g" id="f4">
+                    <ellipse cx="155" cy="18" rx="5.5" ry="9" fill="#ffd700" />
+                    <ellipse cx="155" cy="19" rx="3.5" ry="6" fill="#ff8c00" />
+                    <ellipse cx="155" cy="20" rx="2" ry="3.5" fill="#fff" opacity="0.7" />
+                </g>
+
+                <!-- ── BOTTOM TIER ── -->
+                <rect x="10" y="185" width="220" height="82" rx="10" fill="#f97b4f" />
+                <rect x="10" y="185" width="220" height="18" rx="6" fill="#e05a30" />
+
+                <!-- sprinkles -->
+                <rect x="29.995202423170866" y="213.15896144123343" width="14" height="5" rx="2" fill="#ffd700"
+                    transform="matrix(1 0 0 1 0 0) matrix(0.939693 -0.34202 0.34202 0.939693 -70.7546 27.423)" />
+                <rect x="72.66609656687476" y="217.87783142059084" width="14" height="5" rx="2" fill="#4db8ff"
+                    transform="matrix(0.965926 0.258819 -0.258819 0.965926 59.7787 -12.9108)" />
+                <rect x="116.03004515017867" y="215.42661216536624" width="14" height="5" rx="2" fill="#ff6baf"
+                    transform="matrix(0.984808 -0.173648 0.173648 0.984808 -35.465 24.2481)" />
+                <rect x="160.74015782326154" y="217.06668011847918" width="14" height="5" rx="2" fill="#c44dff"
+                    transform="matrix(0.906308 0.422618 -0.422618 0.906308 111.615 -50.1543)" />
+                <rect x="198.84615397453308" y="218.38461589813232" width="14" height="5" rx="2" fill="#ffd700"
+                    transform="matrix(0.866025 -0.5 0.5 0.866025 -82.8642 132.516)" />
+                <circle cx="50.384615659713745" cy="240.84615409374237" r="13.615384101867676" fill="#ff6baf"
+                    transform="matrix(1 0 0 1 0 0)" />
+                <circle cx="98.99999964237213" cy="248.46153795719147" r="10.846153259277344" fill="#c44dff"
+                    transform="matrix(1 0 0 1 0 0)" />
+                <circle cx="142.9999977654842" cy="238.92307402237256" r="11.69230842590332" fill="#ffd700"
+                    transform="matrix(1 0 0 1 0 0)" />
+                <circle cx="191.92307698726654" cy="242.61538457870483" r="7" fill="#4db8ff" />
+
+                <!-- ── TOP TIER ── -->
+                <rect x="54" y="68" width="132" height="59" rx="10" fill="#ffb347" />
+                <rect x="54" y="68" width="132" height="13" rx="6" fill="#e08a20" />
+                <!-- sprinkles -->
+                <rect x="132.48558456215156" y="98.385212316723" width="14" height="5" rx="2" fill="#ff6baf"
+                    transform="rotate(-14.0292 119.42 99.3793) matrix(0.984808 -0.173648 0.173648 0.984808 -35.465 24.2481)" />
+                <rect x="143.5303665329297" y="39.045097966088576" width="14" height="5" rx="2" fill="#ffd700"
+                    transform="matrix(1 0 0 1 0 0) matrix(0.866025 -0.5 0.5 0.866025 -82.8642 132.516)" />
+                <rect x="126.38248261299357" y="71.64815228204975" width="14" height="5" rx="2" fill="#4db8ff"
+                    transform="matrix(0.965926 0.258819 -0.258819 0.965926 59.7787 -12.9108)" />
+                <circle cx="93.65692365169525" cy="94.76461112499237" r="7" fill="#4db8ff"
+                    transform="matrix(1 0 0 1 0 0) matrix(1 0 0 1 0 0)" />
+                <circle cx="143.26461505889893" cy="100.92384564876556" r="8" fill="#c44dff"
+                    transform="matrix(1 0 0 1 0 0)" />
+
+                <!-- ── MIDDLE TIER ── -->
+                <rect x="28" y="118" width="184" height="67" rx="10" fill="#f9c05a" />
+                <rect x="28" y="118" width="184" height="15" rx="6" fill="#d99a30" />
+                <!-- sprinkles -->
+                <rect x="144.68292894764292" y="141.41436153845268" width="14" height="5" rx="2" fill="#c44dff"
+                    transform="matrix(1 0 0 1 0 0) matrix(0.906308 0.422618 -0.422618 0.906308 111.615 -50.1543)" />
+                <rect x="103.30074944071004" y="74.88635351356648" width="14" height="5" rx="2" fill="#ffd700"
+                    transform="matrix(0.866025 -0.5 0.5 0.866025 -82.8642 132.516)" />
+                <rect x="115.37437844462436" y="127.1579280024914" width="14" height="5" rx="2" fill="#4db8ff"
+                    transform="rotate(117.484 144.425 144.002) matrix(0.965926 0.258819 -0.258819 0.965926 59.7787 -12.9108)" />
+                <rect x="98.53433087037257" y="139.32053691038868" width="14" height="5" rx="2" fill="#ff6baf"
+                    transform="rotate(34.8597 93.2677 144.385) matrix(0.999462 0.0328124 -0.0328124 0.999462 -7.55633 -0.822371)" />
+                <circle cx="70.61538410186768" cy="161.23077046871185" r="8" fill="#c44dff" />
+                <circle cx="164.61538553237915" cy="160.07692325115204" r="10" fill="#ff6baf"
+                    transform="matrix(1 0 0 1 0 0)" />
+                <circle cx="117.6538446809237" cy="158.34615364269544" r="9.730769157409668" fill="#ffd700"
+                    transform="matrix(1 0 0 1 0 0)" />
+
+                <!-- ── WHITE DRIPS ── -->
+                <!-- Bottom Tier -->
+                <path
+                    d="M12.307692786623772,193.461537298351 Q24.24786333524453,166.61538415828295 36.188033883865295,193.461537298351 Q48.12820443248606,166.61538415828295 60.068374981106814,193.461537298351 Q72.00854552972758,166.61538415828295 83.94871607834834,193.461537298351 Q95.8888866269691,166.61538415828295 107.82905717558987,193.461537298351 Q119.76922772421062,166.61538415828295 131.70939827283138,193.461537298351 Q143.64956882145214,166.61538415828295 155.58973937007292,193.461537298351 Q167.52990991869368,166.61538415828295 179.47008046731443,193.461537298351 Q191.4102510159352,166.61538415828295 203.35042156455594,193.461537298351 Q215.2905921131767,166.61538415828295 227.23076266179748,193.461537298351"
+                    fill="none" stroke="#fff8e7" stroke-width="9" stroke-linecap="round" />
+
+
+                <!-- Middle Tier -->
+                <path
+                    d="M31.230769086273085,124.1538462638855 Q43.05128233471669,106.1538462638855 54.87179558316029,124.1538462638855 Q66.6923088316039,106.1538462638855 78.5128220800475,124.1538462638855 Q90.3333353284911,106.1538462638855 102.1538485769347,124.1538462638855 Q113.97436182537831,106.1538462638855 125.79487507382191,124.1538462638855 Q137.61538832226552,106.1538462638855 149.43590157070912,124.1538462638855 Q161.25641481915272,106.1538462638855 173.07692806759633,124.1538462638855 Q184.89744131603993,106.1538462638855 196.71795456448353,124.1538462638855 Q205.31469147244252,106.1538462638855 208.53846781292714,124.1538462638855"
+                    fill="none" stroke="#fff8e7" stroke-width="8" stroke-linecap="round"
+                    transform="matrix(1 0 0 1 0 0)" />
+
+
+                <!-- Top Tier -->
+                <path
+                    d="M56.30768496696569,74.92307739284962 Q67.45478424489747,53.538462631083576 78.60188352282925,74.92307739284962 Q89.74898280076106,53.538462631083576 100.89608207869283,74.92307739284962 Q112.04318135662463,53.538462631083576 123.19028063455642,74.92307739284962 Q134.3373799124882,53.538462631083576 145.48447919042,74.92307739284962 Q156.6315784683518,53.538462631083576 167.77867774628356,74.92307739284962 Q176.69635716862902,53.538462631083576 183.3846167353881,74.92307739284962"
+                    fill="none" stroke="#fff8e7" stroke-width="7" stroke-linecap="round" />
+
+            </svg>
+
+            <p id="cakeSubtitle">🌬️ Click to blow out the candles!</p>
+        </div>
+
+        <!-- MESSAGE -->
+        <div class="card hidden">
+            <span class="emoji-row">🎈 🎁 🎊 🎉 🥂</span>
+            <p>
+                May your birthday be as bright as your smile, as warm as your heart,
+                and as wonderful as you make every day feel for everyone around you.
+                Here's to another year full of adventures, joy, and all the things
+                that make life truly amazing!
+            </p>
+            <button class="btn-expand" onclick="openModal()" aria-label="Open message">
+                <svg viewBox="0 0 14 14">
+                    <polyline points="9,1 13,1 13,5" />
+                    <polyline points="5,13 1,13 1,9" />
+                    <line x1="13" y1="1" x2="8" y2="6" />
+                    <line x1="1" y1="13" x2="6" y2="8" />
+                </svg>
+            </button>
+            <p class="cheers">Wishing you all the best — today and always! 🌟</p>
+        </div>
+
+    </main>
+
+    <!-- MODAL CARD POPUP -->
+    <div id="cardModal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+            <span class="emoji-row">🎈 🎁 🎊 🎉 🥂</span>
+            <p>
+                May your birthday be as bright as your smile, as warm as your heart,
+                and as wonderful as you make every day feel for everyone around you.
+                Here's to another year full of adventures, joy, and all the things
+                that make life truly amazing!
+            </p>
+            <p class="cheers">Wishing you all the best — today and always! 🌟</p>
+        </div>
+    </div>
+
+    <script>
+        /* ── CONFIG ──
+           Central colour palettes used by the fireworks and balloon generators.
+           Edit these arrays to change the celebration colour scheme. */
+        const CONFETTI_COLORS = ['#ff6baf', '#ffd700', '#c44dff', '#4db8ff', '#ff8c00', '#66ff99', '#ff4d4d'];
+        const BALLOON_COLORS = [
+            { body: '#ff6baf', shine: '#ffaad0', shadow: '#cc3080' },
+            { body: '#ffd700', shine: '#ffe566', shadow: '#cc9900' },
+            { body: '#c44dff', shine: '#d980ff', shadow: '#7700cc' },
+            { body: '#4db8ff', shine: '#99d6ff', shadow: '#0077cc' },
+            { body: '#ff6b4d', shine: '#ff9980', shadow: '#cc2200' },
+        ];
+
+        /* ── STARS ──
+           IIFE: runs once at parse time to populate #stars with 130 randomly
+           sized and positioned dots, each with a randomised twinkle duration
+           (--d) and start delay (--delay) so they don't all pulse together. */
+        (function makeStars() {
+            const el = document.getElementById('stars');
+            for (let i = 0; i < 130; i++) {
+                const s = document.createElement('div');
+                s.className = 'star';
+                const size = Math.random() * 2.5 + 1;
+                Object.assign(s.style, {
+                    width: size + 'px',
+                    height: size + 'px',
+                    left: (Math.random() * 100) + '%',
+                    top: (Math.random() * 100) + '%',
+                    '--d': (Math.random() * 3 + 1.5) + 's',    // twinkle cycle length
+                    '--delay': (Math.random() * 4) + 's',       // stagger start
+                });
+                el.appendChild(s);
+            }
+        })();
+
+        /* ── BALLOONS ──
+           makeBalloonSVG: builds an inline SVG string for a single balloon
+           using the provided colour set (body fill, shine highlight, shadow).
+           spawnBalloon: creates one balloon-wrap div, sets randomised CSS
+           custom properties for position, drift, and rotation, appends it
+           to #balloons, then schedules its removal after the animation ends. */
+        function makeBalloonSVG(colors) {
+            const { body, shine, shadow } = colors;
+            return `<svg width="54" height="90" viewBox="0 0 54 90" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="27" cy="32" rx="22" ry="26" fill="${body}"/>
+        <ellipse cx="20" cy="20" rx="6" ry="8" fill="${shine}" opacity="0.55"/>
+        <path d="M27 58 Q24 65 27 70 Q30 65 27 58" fill="${shadow}"/>
+        <path d="M27 70 Q22 76 27 82 Q32 76 27 70" fill="${shadow}" opacity="0.6"/>
+        <line x1="27" y1="82" x2="27" y2="90" stroke="rgba(255,255,255,0.35)" stroke-width="1.2"/>
+      </svg>`;
+        }
+
+        function spawnBalloon() {
+            const wrap = document.createElement('div');
+            wrap.className = 'balloon-wrap';
+            const c = BALLOON_COLORS[Math.floor(Math.random() * BALLOON_COLORS.length)];
+            wrap.innerHTML = makeBalloonSVG(c);
+            Object.assign(wrap.style, {
+                left: (Math.random() * 92 + 2) + '%',
+                '--bd': (Math.random() * 8 + 10) + 's',
+                '--bdelay': (Math.random() * 8) + 's',
+                '--bsx': (Math.random() * 140 - 70) + 'px',
+                '--brot': (Math.random() * 16 - 8) + 'deg',
+            });
+            document.getElementById('balloons').appendChild(wrap);
+            const dur = (parseFloat(wrap.style['--bd']) + parseFloat(wrap.style['--bdelay']) + 1) * 1000;
+            setTimeout(() => wrap.remove(), dur);
+        }
+        // Seed with 6 balloons immediately, then spawn one every 2.2 s
+        for (let i = 0; i < 6; i++) spawnBalloon();
+        setInterval(spawnBalloon, 2200);
+
+        /* ── CANDLE LOGIC ──
+           blowCandles: toggles between blown-out and relit states.
+           - candlesOut tracks current state so clicks alternate behaviour.
+           - modalShownOnce ensures the birthday message modal only pops
+             up on the very first blow; subsequent clicks just relight. */
+        let candlesOut = false;      // true when all flames are hidden
+        let modalShownOnce = false;  // prevents modal from re-opening on relight
+        function blowCandles() {
+            if (!candlesOut) {
+                // Stagger each flame off with a 110 ms gap for a realistic effect
+                ['f1', 'f2', 'f3', 'f4'].forEach((id, i) => {
+                    setTimeout(() => {
+                        const f = document.getElementById(id);
+                        if (f) f.classList.add('out');
+                    }, i * 110);
+                });
+                candlesOut = true;
+                // Fade out the "click to blow" hint text
+                document.getElementById('cakeSubtitle').style.animation = 'subtitleFadeOut 0.8s ease forwards';
+                // Show modal only the very first time candles are blown out
+                if (!modalShownOnce) {
+                    setTimeout(() => {
+                        document.getElementById('cardModal').classList.add('open');
+                    }, 550);
+                }
+                // Launch 10 fireworks spread over ~2.5 s
+                for (let i = 0; i < 10; i++) setTimeout(() => fireFirework(), i * 280);
+            } else {
+                // Relight candles in reverse order for a natural look
+                ['f4', 'f3', 'f2', 'f1'].forEach((id, i) => {
+                    setTimeout(() => {
+                        const f = document.getElementById(id);
+                        if (f) f.classList.remove('out');
+                    }, i * 110);
+                });
+                candlesOut = false;
+                // Restore the hint subtitle
+                const sub = document.getElementById('cakeSubtitle');
+                sub.style.animation = 'subtitleFadeIn 0.8s ease forwards';
+            }
+        }
+
+        /* ── OPEN MODAL ── */
+        function openModal() {
+            document.getElementById('cardModal').classList.add('open');
+        }
+
+        /* ── CLOSE MODAL ── */
+        function closeModal() {
+            document.getElementById('cardModal').classList.remove('open');
+            if (!modalShownOnce) {
+                modalShownOnce = true;
+                // First time: reveal inline card after modal fades
+                setTimeout(() => {
+                    document.querySelector('.card').classList.remove('hidden');
+                }, 350);
+            }
+        }
+
+        /* ── FIREWORK LOGIC ──
+           fireFirework: spawns a rocket element that travels from the bottom
+           of the viewport to a random target point (cx, cy in vw/vh units).
+           When the rise animation ends, the rocket is removed and burst() is
+           called at the target coordinates to create the explosion effect.
+
+           burst: creates three layers of particles at (cx, cy):
+             1. A radial-gradient flash circle
+             2. ~100 sparks (some round dots, some elongated streaks)
+             3. ~22 glitter dots with a longer, gravity-heavy fall */
+        function fireFirework() {
+            // Pick a random burst position within the safe centre of the viewport
+            const cx = Math.random() * 75 + 12; // 12–87 vw
+            const cy = Math.random() * 45 + 8;  //  8–53 vh
+
+            // Choose two colours for the burst (sparks mix between them)
+            const col1 = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+            const col2 = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+
+            // Scale rise duration to the physical pixel distance so speed feels consistent
+            const riseDistance = window.innerHeight * (1 - cy / 100);
+            const riseDur = (0.2 + riseDistance / 1100).toFixed(2);
+
+            const rocket = document.createElement('div');
+            rocket.className = 'fw-rocket';
+
+            rocket.style.left = cx + 'vw';
+            rocket.style.top = '100vh'; // start below the fold
+
+            rocket.style.setProperty('--col', col1);
+            rocket.style.setProperty('--rise', `-${riseDistance}px`);
+            rocket.style.setProperty('--dur', riseDur + 's');
+
+            document.body.appendChild(rocket);
+
+            // Trigger the burst once the rocket reaches its apex
+            rocket.addEventListener('animationend', () => {
+                rocket.remove();
+                burst(cx, cy, col1, col2);
+            });
+        }
+
+        function burst(cx, cy, col1, col2) {
+            // ── FLASH: brief expanding radial-gradient circle at the burst origin
+            const flash = document.createElement('div');
+            flash.className = 'fw-flash';
+
+            flash.style.left = cx + 'vw';
+            flash.style.top = cy + 'vh';
+            flash.style.width = '70px';
+            flash.style.height = '70px';
+
+            flash.style.background =
+                `radial-gradient(circle, #fff 0%, ${col1} 55%, transparent 100%)`;
+
+            document.body.appendChild(flash);
+
+            flash.addEventListener('animationend', () => flash.remove());
+
+            // ── SPARKS: 100 particles fanning out in all directions
+            const sparkCount = 100;
+
+            for (let i = 0; i < sparkCount; i++) {
+
+                const p = document.createElement('div');
+                p.className = 'fw-spark';
+
+                // Evenly distribute angles around the full circle with slight jitter
+                const angle =
+                    (i / sparkCount) * Math.PI * 2 + (Math.random() * 0.18);
+
+                const dist = Math.random() * 110 + 55; // travel distance in px
+
+                // ~58 % of sparks become elongated streaks for a realistic burst look
+                const isStreak = Math.random() > 0.42;
+
+                const h = Math.random() * 4 + 2.5;
+                const w = isStreak
+                    ? h * (Math.random() * 3 + 2.5)
+                    : h;
+
+                const col = Math.random() > 0.35 ? col1 : col2;
+
+                const rotDeg = angle * (180 / Math.PI);
+
+                p.style.left = cx + 'vw';
+                p.style.top = cy + 'vh';
+
+                p.style.width = w + 'px';
+                p.style.height = h + 'px';
+
+                p.style.background = col;
+
+                p.style.setProperty('--col', col);
+                p.style.setProperty('--br', isStreak ? '2px' : '50%');
+                p.style.setProperty('--glow', (h + 3) + 'px');
+                p.style.setProperty('--rot', rotDeg + 'deg');
+
+                p.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+                p.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+
+                p.style.setProperty(
+                    '--grav',
+                    (Math.random() * 50 + 15) + 'px'
+                );
+
+                p.style.setProperty(
+                    '--dur',
+                    (Math.random() * 0.35 + 0.6) + 's'
+                );
+
+                document.body.appendChild(p);
+
+                p.addEventListener('animationend', () => p.remove());
+            }
+
+            // ── GLITTER: 22 slower, heavier particles that drift and fall after the burst
+            for (let i = 0; i < 22; i++) {
+
+                const g = document.createElement('div');
+                g.className = 'fw-glitter';
+
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * 75 + 20;
+                const size = Math.random() * 3 + 1.5;
+
+                const col = Math.random() > 0.4 ? col1 : '#fff';
+
+                g.style.left = cx + 'vw';
+                g.style.top = cy + 'vh';
+
+                g.style.width = size + 'px';
+                g.style.height = size + 'px';
+
+                g.style.background = col;
+
+                g.style.setProperty('--col', col);
+
+                g.style.setProperty('--tx',
+                    Math.cos(angle) * dist + 'px');
+
+                g.style.setProperty('--ty',
+                    Math.sin(angle) * dist + 'px');
+
+                g.style.setProperty('--grav',
+                    (Math.random() * 130 + 70) + 'px');
+
+                g.style.setProperty('--dur',
+                    (Math.random() * 0.5 + 1.0) + 's');
+
+                document.body.appendChild(g);
+
+                g.addEventListener('animationend', () => g.remove());
+            }
+        }
+
+        // Fire three opening fireworks shortly after the page finishes loading
+        window.addEventListener('load', () => {
+            for (let i = 0; i < 7; i++) {
+                setTimeout(() => fireFirework(), i * 200);
+            }
+        });
+    </script>
+</body>
+
+</html>
