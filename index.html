@@ -4,12 +4,12 @@
      floating balloons, a clickable birthday cake with candles,
      a message card with modal popup, and a CSS/JS fireworks display.
 -->
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Happy Birthday! 🎉</title>
+    <title>Koyito Birthday ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;700;800&display=swap"
         rel="stylesheet" />
     <style>
@@ -535,6 +535,220 @@
                 padding: 20px 18px;
             }
         }
+
+        /* ── GIFT BOX ── */
+        .gift-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        .gift-label {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .gift-container {
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 160px;
+            width: 175px;
+        }
+
+        .gift-container.active {
+            animation: giftVibration .7s ease;
+        }
+
+        @keyframes giftVibration {
+            0% {
+                transform: scale(1, 1);
+            }
+
+            25% {
+                transform: scale(.95, 1.05);
+            }
+
+            50% {
+                transform: scale(1.1, .9);
+            }
+
+            75% {
+                transform: scale(.9, 1.1);
+            }
+
+            100% {
+                transform: scale(1, 1);
+            }
+        }
+
+        .gift-container .gift-box {
+            position: absolute;
+            height: 100px;
+            width: 150px;
+            background: #ec9c4a;
+            animation: giftBounce 4s ease infinite;
+        }
+
+        .gift-container .gift-box.active {
+            animation: giftStopBounce 1s ease;
+        }
+
+        @keyframes giftStopBounce {
+            0% {
+                transform: translateY(-24px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        @keyframes giftBounce {
+            0% {
+                transform: translateY(-24px);
+            }
+
+            50% {
+                transform: translateY(0px);
+            }
+
+            100% {
+                transform: translateY(-24px);
+            }
+        }
+
+        .gift-box::before {
+            content: '';
+            position: absolute;
+            height: 100px;
+            width: 25px;
+            background: #e76f51;
+            left: 62px;
+        }
+
+        .gift-box::after {
+            content: '';
+            position: absolute;
+            height: 100px;
+            width: 150px;
+            left: 0;
+            box-shadow: inset 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .gift-click {
+            position: absolute;
+            background: #ec9c4a;
+            width: 170px;
+            height: 45px;
+            top: -45px;
+            left: -10px;
+            cursor: pointer;
+            z-index: 1;
+            transition: .5s ease;
+        }
+
+        .gift-click.active {
+            transition-delay: 1s;
+            transform: translateX(100px) translateY(50px) rotate(45deg);
+        }
+
+        .gift-click::before {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 45px;
+            background: #e76f51;
+            left: 72px;
+            z-index: 2;
+        }
+
+        .gift-click::after {
+            content: '';
+            position: absolute;
+            width: 3px;
+            height: 0;
+            border-bottom: 30px solid #e76f51;
+            border-top: 30px solid #e76f51;
+            border-left: 0px solid transparent;
+            border-right: 30px solid transparent;
+            transform: rotate(-90deg);
+            top: -47px;
+            left: 68px;
+            z-index: 3;
+        }
+
+        .gift-container .gift-shadow {
+            content: '';
+            position: relative;
+            width: 170px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            top: 50px;
+            border-radius: 50%;
+            left: -2px;
+            animation: giftBounceOut 4s ease infinite forwards;
+        }
+
+        .gift-container .gift-shadow.active {
+            animation: giftStopBounceOut 1s ease;
+        }
+
+        @keyframes giftStopBounceOut {
+            0% {
+                transform: translateY(24px);
+                scale: .7;
+            }
+
+            100% {
+                transform: translateY(0px);
+                scale: 1;
+            }
+        }
+
+        @keyframes giftBounceOut {
+            0% {
+                transform: translateY(24px);
+                scale: .7;
+            }
+
+            50% {
+                transform: translateY(0px);
+                scale: 1;
+            }
+
+            100% {
+                transform: translateY(24px);
+                scale: .7;
+            }
+        }
+
+        @keyframes giftShake {
+            0% {
+                transform: rotate(0deg) translateY(-250px);
+            }
+
+            25% {
+                transform: rotate(2deg) translateY(-250px);
+            }
+
+            50% {
+                transform: rotate(0deg) translateY(-250px);
+            }
+
+            75% {
+                transform: rotate(2deg) translateY(-250px);
+            }
+
+            100% {
+                transform: rotate(0deg) translateY(-250px);
+            }
+        }
     </style>
 </head>
 
@@ -548,8 +762,8 @@
     <div id="fireworks"></div>
 
     <main class="page">
-        <h1 class="title">Happy Birthday!</h1>
-        <p class="subtitle">✨ You Are Absolutely Wonderful ✨</p>
+        <h1 class="title">Feliz Cumpleaños Precioso!</h1>
+        <p class="subtitle">✨ Para mi bebe cuervo hermoso en su dia especial ✨</p>
 
         <!-- CAKE -->
         <div id="cakeWrap" onclick="blowCandles()">
@@ -561,8 +775,8 @@
 
                 <!-- ── CANDLES ── -->
                 <!-- Candle A (pink) -->
-                <rect x="70" y="34" width="14" height="36" rx="4" fill="#ff6baf" />
-                <rect x="70" y="34" width="14" height="9" rx="3" fill="#ffaad0" />
+                <rect x="70" y="34" width="14" height="36" rx="4" fill="#2dd4bf" />
+                <rect x="70" y="34" width="14" height="9" rx="3" fill="#7ee8e1" />
                 <line x1="77" y1="34" x2="77" y2="26" stroke="#aaa" stroke-width="1.5" />
                 <g class="flame-g" id="f1">
                     <ellipse cx="77" cy="18" rx="5.5" ry="9" fill="#ffd700" />
@@ -571,8 +785,8 @@
                 </g>
 
                 <!-- Candle B (purple) -->
-                <rect x="96" y="26" width="14" height="44" rx="4" fill="#c44dff" />
-                <rect x="96" y="26" width="14" height="9" rx="3" fill="#d980ff" />
+                <rect x="96" y="26" width="14" height="44" rx="4" fill="#f43f5e" />
+                <rect x="96" y="26" width="14" height="9" rx="3" fill="#fda4af" />
                 <line x1="103" y1="26" x2="103" y2="18" stroke="#aaa" stroke-width="1.5" />
                 <g class="flame-g" id="f2">
                     <ellipse cx="103" cy="10" rx="5.5" ry="9" fill="#ffd700" />
@@ -581,8 +795,8 @@
                 </g>
 
                 <!-- Candle C (gold) -->
-                <rect x="122" y="26" width="14" height="44" rx="4" fill="#ffd700" />
-                <rect x="122" y="26" width="14" height="9" rx="3" fill="#ffe566" />
+                <rect x="122" y="26" width="14" height="44" rx="4" fill="#e879f9" />
+                <rect x="122" y="26" width="14" height="9" rx="3" fill="#f0abfc" />
                 <line x1="129" y1="26" x2="129" y2="18" stroke="#aaa" stroke-width="1.5" />
                 <g class="flame-g" id="f3">
                     <ellipse cx="129" cy="10" rx="5.5" ry="9" fill="#ffd700" />
@@ -591,8 +805,8 @@
                 </g>
 
                 <!-- Candle D (blue) -->
-                <rect x="148" y="34" width="14" height="36" rx="4" fill="#4db8ff" />
-                <rect x="148" y="34" width="14" height="9" rx="3" fill="#99d6ff" />
+                <rect x="148" y="34" width="14" height="36" rx="4" fill="#a3e635" />
+                <rect x="148" y="34" width="14" height="9" rx="3" fill="#d9f99d" />
                 <line x1="155" y1="34" x2="155" y2="26" stroke="#aaa" stroke-width="1.5" />
                 <g class="flame-g" id="f4">
                     <ellipse cx="155" cy="18" rx="5.5" ry="9" fill="#ffd700" />
@@ -601,59 +815,59 @@
                 </g>
 
                 <!-- ── BOTTOM TIER ── -->
-                <rect x="10" y="185" width="220" height="82" rx="10" fill="#f97b4f" />
-                <rect x="10" y="185" width="220" height="18" rx="6" fill="#e05a30" />
+                <rect x="10" y="185" width="220" height="82" rx="10" fill="#89509a" />
+                <rect x="10" y="185" width="220" height="18" rx="6" fill="#5b3566" />
 
                 <!-- sprinkles -->
-                <rect x="29.995202423170866" y="213.15896144123343" width="14" height="5" rx="2" fill="#ffd700"
+                <rect x="29.995202423170866" y="213.15896144123343" width="14" height="5" rx="2" fill="#f43f5e"
                     transform="matrix(1 0 0 1 0 0) matrix(0.939693 -0.34202 0.34202 0.939693 -70.7546 27.423)" />
-                <rect x="72.66609656687476" y="217.87783142059084" width="14" height="5" rx="2" fill="#4db8ff"
+                <rect x="72.66609656687476" y="217.87783142059084" width="14" height="5" rx="2" fill="#2dd4bf"
                     transform="matrix(0.965926 0.258819 -0.258819 0.965926 59.7787 -12.9108)" />
-                <rect x="116.03004515017867" y="215.42661216536624" width="14" height="5" rx="2" fill="#ff6baf"
+                <rect x="116.03004515017867" y="215.42661216536624" width="14" height="5" rx="2" fill="#e879f9"
                     transform="matrix(0.984808 -0.173648 0.173648 0.984808 -35.465 24.2481)" />
-                <rect x="160.74015782326154" y="217.06668011847918" width="14" height="5" rx="2" fill="#c44dff"
+                <rect x="160.74015782326154" y="217.06668011847918" width="14" height="5" rx="2" fill="#a3e635"
                     transform="matrix(0.906308 0.422618 -0.422618 0.906308 111.615 -50.1543)" />
-                <rect x="198.84615397453308" y="218.38461589813232" width="14" height="5" rx="2" fill="#ffd700"
+                <rect x="198.84615397453308" y="218.38461589813232" width="14" height="5" rx="2" fill="#60a5fa"
                     transform="matrix(0.866025 -0.5 0.5 0.866025 -82.8642 132.516)" />
-                <circle cx="50.384615659713745" cy="240.84615409374237" r="13.615384101867676" fill="#ff6baf"
+                <circle cx="50.384615659713745" cy="240.84615409374237" r="13.615384101867676" fill="#f43f5e"
                     transform="matrix(1 0 0 1 0 0)" />
-                <circle cx="98.99999964237213" cy="248.46153795719147" r="10.846153259277344" fill="#c44dff"
+                <circle cx="98.99999964237213" cy="248.46153795719147" r="10.846153259277344" fill="#2dd4bf"
                     transform="matrix(1 0 0 1 0 0)" />
-                <circle cx="142.9999977654842" cy="238.92307402237256" r="11.69230842590332" fill="#ffd700"
+                <circle cx="142.9999977654842" cy="238.92307402237256" r="11.69230842590332" fill="#a3e635"
                     transform="matrix(1 0 0 1 0 0)" />
-                <circle cx="191.92307698726654" cy="242.61538457870483" r="7" fill="#4db8ff" />
+                <circle cx="191.92307698726654" cy="242.61538457870483" r="7" fill="#60a5fa" />
 
                 <!-- ── TOP TIER ── -->
-                <rect x="54" y="68" width="132" height="59" rx="10" fill="#ffb347" />
-                <rect x="54" y="68" width="132" height="13" rx="6" fill="#e08a20" />
+                <rect x="54" y="68" width="132" height="59" rx="10" fill="#FFB090" />
+                <rect x="54" y="68" width="132" height="13" rx="6" fill="#FF8C69" />
                 <!-- sprinkles -->
-                <rect x="132.48558456215156" y="98.385212316723" width="14" height="5" rx="2" fill="#ff6baf"
+                <rect x="132.48558456215156" y="98.385212316723" width="14" height="5" rx="2" fill="#f43f5e"
                     transform="rotate(-14.0292 119.42 99.3793) matrix(0.984808 -0.173648 0.173648 0.984808 -35.465 24.2481)" />
-                <rect x="143.5303665329297" y="39.045097966088576" width="14" height="5" rx="2" fill="#ffd700"
+                <rect x="143.5303665329297" y="39.045097966088576" width="14" height="5" rx="2" fill="#2dd4bf"
                     transform="matrix(1 0 0 1 0 0) matrix(0.866025 -0.5 0.5 0.866025 -82.8642 132.516)" />
-                <rect x="126.38248261299357" y="71.64815228204975" width="14" height="5" rx="2" fill="#4db8ff"
+                <rect x="126.38248261299357" y="71.64815228204975" width="14" height="5" rx="2" fill="#f43f5e"
                     transform="matrix(0.965926 0.258819 -0.258819 0.965926 59.7787 -12.9108)" />
-                <circle cx="93.65692365169525" cy="94.76461112499237" r="7" fill="#4db8ff"
+                <circle cx="93.65692365169525" cy="94.76461112499237" r="7" fill="#e879f9"
                     transform="matrix(1 0 0 1 0 0) matrix(1 0 0 1 0 0)" />
-                <circle cx="143.26461505889893" cy="100.92384564876556" r="8" fill="#c44dff"
+                <circle cx="143.26461505889893" cy="100.92384564876556" r="8" fill="#60a5fa"
                     transform="matrix(1 0 0 1 0 0)" />
 
                 <!-- ── MIDDLE TIER ── -->
-                <rect x="28" y="118" width="184" height="67" rx="10" fill="#f9c05a" />
-                <rect x="28" y="118" width="184" height="15" rx="6" fill="#d99a30" />
+                <rect x="28" y="118" width="184" height="67" rx="10" fill="#B05889" />
+                <rect x="28" y="118" width="184" height="15" rx="6" fill="#7d3e61" />
                 <!-- sprinkles -->
-                <rect x="144.68292894764292" y="141.41436153845268" width="14" height="5" rx="2" fill="#c44dff"
+                <rect x="144.68292894764292" y="141.41436153845268" width="14" height="5" rx="2" fill="#f43f5e"
                     transform="matrix(1 0 0 1 0 0) matrix(0.906308 0.422618 -0.422618 0.906308 111.615 -50.1543)" />
-                <rect x="103.30074944071004" y="74.88635351356648" width="14" height="5" rx="2" fill="#ffd700"
+                <rect x="103.30074944071004" y="74.88635351356648" width="14" height="5" rx="2" fill="#60a5fa"
                     transform="matrix(0.866025 -0.5 0.5 0.866025 -82.8642 132.516)" />
-                <rect x="115.37437844462436" y="127.1579280024914" width="14" height="5" rx="2" fill="#4db8ff"
+                <rect x="115.37437844462436" y="127.1579280024914" width="14" height="5" rx="2" fill="#f43f5e"
                     transform="rotate(117.484 144.425 144.002) matrix(0.965926 0.258819 -0.258819 0.965926 59.7787 -12.9108)" />
-                <rect x="98.53433087037257" y="139.32053691038868" width="14" height="5" rx="2" fill="#ff6baf"
+                <rect x="98.53433087037257" y="139.32053691038868" width="14" height="5" rx="2" fill="#2dd4bf"
                     transform="rotate(34.8597 93.2677 144.385) matrix(0.999462 0.0328124 -0.0328124 0.999462 -7.55633 -0.822371)" />
-                <circle cx="70.61538410186768" cy="161.23077046871185" r="8" fill="#c44dff" />
-                <circle cx="164.61538553237915" cy="160.07692325115204" r="10" fill="#ff6baf"
+                <circle cx="70.61538410186768" cy="161.23077046871185" r="8" fill="#a3e635" />
+                <circle cx="164.61538553237915" cy="160.07692325115204" r="10" fill="#f43f5e"
                     transform="matrix(1 0 0 1 0 0)" />
-                <circle cx="117.6538446809237" cy="158.34615364269544" r="9.730769157409668" fill="#ffd700"
+                <circle cx="117.6538446809237" cy="158.34615364269544" r="9.730769157409668" fill="#e879f9"
                     transform="matrix(1 0 0 1 0 0)" />
 
                 <!-- ── WHITE DRIPS ── -->
@@ -677,17 +891,17 @@
 
             </svg>
 
-            <p id="cakeSubtitle">🌬️ Click to blow out the candles!</p>
+            <p id="cakeSubtitle">🌬️ Click para soplar las velas!</p>
         </div>
 
         <!-- MESSAGE -->
         <div class="card hidden">
-            <span class="emoji-row">🎈 🎁 🎊 🎉 🥂</span>
+            <span class="emoji-row">🎈 🥰 💕 🎂 🎊</span>
             <p>
-                May your birthday be as bright as your smile, as warm as your heart,
-                and as wonderful as you make every day feel for everyone around you.
-                Here's to another year full of adventures, joy, and all the things
-                that make life truly amazing!
+                Mi cielo, hoy es tu día especial y quiero que seas muy feliz. Eres lo mas preciado para mi y una persona
+                maravillosa. Quiero seguir acompañandote y viendote triunfar en todo lo que tengas en mente, y sobretodo
+                quiero verte con tu paz, en nuestra casita, viviendo tranquilos, con mucho amor y lujuria 7u7 te amo
+                mucho mi bebe precioso, gracias por ser como eres y por hacerme tan feliz.
             </p>
             <button class="btn-expand" onclick="openModal()" aria-label="Open message">
                 <svg viewBox="0 0 14 14">
@@ -697,23 +911,45 @@
                     <line x1="1" y1="13" x2="6" y2="8" />
                 </svg>
             </button>
-            <p class="cheers">Wishing you all the best — today and always! 🌟</p>
+            <p class="cheers">Te adoro mi rey cuervo hermoso, Feliz Cumpleaños! 🌟</p>
+
+            <!-- GIFT BOX -->
+            <div class="gift-section">
+                <div class="gift-container" id="giftContainer">
+                    <div class="gift-shadow" id="giftShadow"></div>
+                    <div class="gift-box" id="giftBox">
+                        <div class="gift-click" id="giftClick"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </main>
+
+    <!-- GIFT IMAGE MODAL -->
+    <div id="giftModal" class="modal-overlay" onclick="if(event.target===this)closeGiftModal()">
+        <div class="modal-box" style="max-width:420px;">
+            <button class="modal-close" onclick="closeGiftModal()" aria-label="Close">✕</button>
+            <img id="giftModalImg" src="./public/underfall.png" alt="Gift"
+                style="width:100%;max-width:340px;height:auto;border-radius:14px;margin-top:10px; margin-bottom: 10px;" />
+            <p>🚚💨 En camino!</p>
+        </div>
+    </div>
 
     <!-- MODAL CARD POPUP -->
     <div id="cardModal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
         <div class="modal-box">
             <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
-            <span class="emoji-row">🎈 🎁 🎊 🎉 🥂</span>
+            <span class="emoji-row">🎈 🥰 💕 🎂 🎊</span>
             <p>
-                May your birthday be as bright as your smile, as warm as your heart,
-                and as wonderful as you make every day feel for everyone around you.
-                Here's to another year full of adventures, joy, and all the things
-                that make life truly amazing!
+                Mi cielo, hoy es tu día especial y quiero que seas muy feliz. Eres lo mas preciado para mi y una persona
+                maravillosa. Quiero seguir acompañandote y viendote triunfar en todo lo que tengas en mente, y sobretodo
+                quiero verte con tu paz, en nuestra casita, viviendo tranquilos, con mucho amor y lujuria 7u7 te amo
+                mucho mi bebe precioso, gracias por ser como eres y por hacerme tan feliz.
             </p>
-            <p class="cheers">Wishing you all the best — today and always! 🌟</p>
+            <p class="cheers">Te adoro mi rey cuervo hermoso, Feliz Cumpleaños! 🌟</p>
+            <img src="./public/Seyo-Aurora-HD.png" alt="Seyo Celebration"
+                style="margin-top: 20px; width: 300px; height: 150px;" />
         </div>
     </div>
 
@@ -1010,6 +1246,40 @@
                 setTimeout(() => fireFirework(), i * 200);
             }
         });
+
+        /* ── GIFT BOX LOGIC ── */
+        const giftClick = document.getElementById('giftClick');
+        const giftShadow = document.getElementById('giftShadow');
+        const giftBox = document.getElementById('giftBox');
+
+        (function initGift() {
+            giftClick.addEventListener('click', () => {
+                if (!giftClick.classList.contains('active')) {
+                    giftClick.classList.add('active');
+                    giftShadow.classList.add('active');
+                    giftBox.classList.add('active');
+                    setTimeout(() => {
+                        openGiftModal();
+                    }, 2000);
+                    for (let i = 0; i < 6; i++) setTimeout(() => fireFirework(), i * 200);
+                } else {
+                    giftClick.classList.remove('active');
+                    giftShadow.classList.remove('active');
+                    giftBox.classList.remove('active');
+                }
+            });
+        })();
+
+        function openGiftModal() {
+            document.getElementById('giftModal').classList.add('open');
+        }
+
+        function closeGiftModal() {
+            document.getElementById('giftModal').classList.remove('open');
+            giftClick.classList.remove('active');
+            giftShadow.classList.remove('active');
+            giftBox.classList.remove('active');
+        }
     </script>
 </body>
 
