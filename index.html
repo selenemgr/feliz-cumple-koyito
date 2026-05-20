@@ -539,9 +539,10 @@
         /* ── GIFT BOX ── */
         .gift-section {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
             margin-top: 40px;
+            width: 100%;
         }
 
         .gift-label {
@@ -915,12 +916,16 @@
 
             <!-- GIFT BOX -->
             <div class="gift-section">
+                <img src="./public/black-crow.png" alt="Gift"
+                    style="width:300px;max-width:340px;height:150px;border-radius:14px;margin-top:10px; margin-bottom: 10px;" />
                 <div class="gift-container" id="giftContainer">
                     <div class="gift-shadow" id="giftShadow"></div>
                     <div class="gift-box" id="giftBox">
                         <div class="gift-click" id="giftClick"></div>
                     </div>
                 </div>
+                <img src="./public/white-crow.png" alt="Gift"
+                    style="width:300px;max-width:340px;height:150px;border-radius:14px;margin-top:10px; margin-bottom: 10px;" />
             </div>
         </div>
 
